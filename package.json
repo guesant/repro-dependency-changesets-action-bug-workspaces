@@ -1,5 +1,11 @@
 {
   "name": "@repro/root",
   "private": true,
-  "workspaces": ["./a", "./b"]
+  "workspaces": ["./a", "./b"],
+  "scripts": {
+    "changeset:status": "changeset status --since=origin/main"
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.29.4"
+  }
 }

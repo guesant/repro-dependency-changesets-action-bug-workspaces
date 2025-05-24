@@ -1,0 +1,80 @@
+# file based on https://github.com/vercel/vercel/blob/5b72741f1c681bbed8ccfe315f3e1126b3f4bde2/.github/workflows/test-lint.yml
+
+name: Lint
+
+on:
+  pull_request:
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  enforce-changeset:
+    name: Enforce Changeset
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+  
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: git fetch origin main
+
+      - name: Enforce Changeset with changeset:status
+        run: |
+          bun install --frozen-lockfile;
+          bun run changeset:status;
+
+  lint:
+    name: Lint
+
+    timeout-minutes: 10
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Static Code and Code Generation Checks
+        uses: devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6
+        if: github.event_name == 'pull_request' && github.event.pull_request.title != 'Version Packages'
+        run: |
+          bun install --frozen-lockfile;
+
+      - name: Ensure clean git workspace
+        if: github.event_name == 'pull_request' && github.event.pull_request.title != 'Version Packages'
+        run: git diff --name-only --exit-code
+
+  summary:
+    name: Summary (lint)
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    if: always()
+    permissions:
+      contents: read
+    needs:
+      - enforce-changeset
+      - lint
+    steps:
+      - name: Check All
+        run: |-
+          for status in ${{ join(needs.*.result, ' ') }}
+          do
+            if [ "$status" != "success" ] && [ "$status" != "skipped" ]
+            then
+              echo "Some checks failed"
+              exit 1
+            fi
+          done

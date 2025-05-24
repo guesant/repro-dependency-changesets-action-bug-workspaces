@@ -1,6 +1,7 @@
 {
   "name": "@repro/a",
   "version": "0.0.1",
+  "private": true,
   "dependencies": {
     "lodash": "4.17.20"
   }
