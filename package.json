@@ -1,0 +1,5 @@
+{
+  "name": "@repro/root",
+  "private": true,
+  "workspaces": ["./a", "./b"]
+}
