@@ -48,7 +48,6 @@ jobs:
       - uses: oven-sh/setup-bun@v2
 
       - name: Static Code and Code Generation Checks
-        uses: devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6
         if: github.event_name == 'pull_request' && github.event.pull_request.title != 'Version Packages'
         run: |
           bun install --frozen-lockfile;
