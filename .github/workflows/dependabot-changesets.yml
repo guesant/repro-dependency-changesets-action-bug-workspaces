@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Update PR
-        uses: mscharley/dependency-changesets-action@eaebee3ca346aa1c22c48256e5c23faca89edecb
+        uses: mscharley/dependency-changesets-action@GH-410
         with:
           token: ${{ secrets.PAT }}
           use-conventional-commits: false
