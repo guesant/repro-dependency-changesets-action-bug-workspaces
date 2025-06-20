@@ -6,6 +6,6 @@
     "changeset:status": "changeset status --since=origin/main"
   },
   "dependencies": {
-    "@changesets/cli": "^2.29.4"
+    "@changesets/cli": "^2.29.5"
   }
 }
